@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "name": "Skipper",
+    "accountNumber": "12341234",
+    "createdAt": "2024-04-04T23:26:39.500Z",
+    "status": "active"
+  },
+  {
+    "id": "2",
+    "name": "Kowalski",
+    "accountNumber": "56785678",
+    "createdAt": "2024-04-04T23:26:39.500Z",
+    "status": "active"
+  },
+  {
+    "id": "3",
+    "name": "Rico",
+    "accountNumber": "98769876",
+    "createdAt": "2024-04-04T23:26:39.500Z",
+    "status": "active"
+  }
+]
