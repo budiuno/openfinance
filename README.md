@@ -13,3 +13,5 @@ token for authentication will show on console when service running, use the toke
 "/v1/account/{bank_code}/{account_number}" hit mockapi https://66100a360640280f219c2844.mockapi.io/api/v1/accounts as mock of bank api to check account
 
 "/v1/disbursements" hit mockapi https://66100a360640280f219c2844.mockapi.io/api/v1/disburse as mock of bank api to post disbursement
+
+Postman collection is also attached
