@@ -1,0 +1,32 @@
+[
+  {
+    "amount": 100000,
+    "sourceAccount": "12341234",
+    "destinationAccount": "56785678",
+    "reference_id": "",
+    "currency": "IDR",
+    "remarks": "test disburse",
+    "sourceBank": "tsb",
+    "destinationBank": "tsb"
+  },
+  {
+    "amount": 10000,
+    "sourceAccount": "12341234",
+    "destinationAccount": "45674567",
+    "reference_id": "",
+    "currency": "IDR",
+    "remarks": "test disburse",
+    "sourceBank": "tsb",
+    "destinationBank": "tsb"
+  },
+  {
+    "amount": 50000,
+    "sourceAccount": "12341234",
+    "destinationAccount": "23452345",
+    "reference_id": "",
+    "currency": "IDR",
+    "remarks": "test disburse",
+    "sourceBank": "tsb",
+    "destinationBank": "tsb"
+  }
+]

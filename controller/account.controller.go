@@ -1,4 +1,4 @@
-package accountController
+package Controller
 
 import (
 	"net/http"
