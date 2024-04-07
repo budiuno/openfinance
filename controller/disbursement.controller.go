@@ -6,16 +6,17 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strconv"
+	"sync"
 
 	// rsp "github.com/budiuno/openfinance/middlewares/response"
 	rsp "github.com/budiuno/openfinance/middlewares/response"
 	"github.com/budiuno/openfinance/models"
+	"github.com/google/uuid"
 )
 
 type disburseSetter interface {
 	InsertDisburseToDB(db *sql.DB, req models.InsertDisbursementRequest) (int, error)
-	PostDisbursement(req models.DisbursementRequest) (int64, error)
+	PostDisbursement(req models.PostDisbursementRequest) (int64, error)
 	UpdateDisbursementStatus(db *sql.DB, referenceID int, newStatus string) error
 }
 
@@ -31,67 +32,58 @@ func DisburseHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, repoDis
 	}
 
 	// Create a WaitGroup to wait for all Goroutines to finish
-	// var wg sync.WaitGroup
+	var wg sync.WaitGroup
 
 	// Create a buffered channel as a semaphore to limit parallel processing
-	// semaphore := make(chan struct{}, 5)
+	semaphore := make(chan struct{}, 5)
 
 	// Process each DisbursementRequest object in parallel with limited concurrency
 	for _, req := range requests {
 		// Acquire a slot in the semaphore
-		// semaphore <- struct{}{}
+		semaphore <- struct{}{}
 
 		// Increment WaitGroup counter
-		// wg.Add(1)
+		wg.Add(1)
 
 		// Execute processing logic in a Goroutine
-		// go func(req models.DisbursementRequest) {
-		// 	// Decrement WaitGroup counter when Goroutine completes
-		// 	defer func() {
-		// 		// Release slot in the semaphore after processing is done
-		// 		<-semaphore
-		// 		wg.Done()
-		// 	}()
+		go func(req models.DisbursementRequest) {
+			// Decrement WaitGroup counter when Goroutine completes
+			defer func() {
+				// Release slot in the semaphore after processing is done
+				<-semaphore
+				wg.Done()
+			}()
 
-		// Perform validation
-		err := isValid(req)
-		if err != nil {
-			invalidRequests = append(invalidRequests, models.InvalidDisburseRequest{Request: req, Error: "Validation failed"})
-		} else {
-			// Hit external endpoint
-			refID, err := repoDisburse.PostDisbursement(req)
+			// Perform validation
+			err := isValid(req)
 			if err != nil {
-				message := fmt.Sprintf("failed to post disbursement, error: %v", err)
-				invalidRequests = append(invalidRequests, models.InvalidDisburseRequest{Request: req, Error: message})
+				invalidRequests = append(invalidRequests, models.InvalidDisburseRequest{Request: req, Error: "Validation failed"})
 			} else {
-				// insert to DB with refId
-				insertReq := populateInsertDisbursementRequest(req, strconv.FormatInt(refID, 10), "pending")
-				pk, err := repoDisburse.InsertDisburseToDB(db, insertReq)
+				// Hit external endpoint
+				refId := uuid.New()
+				_, err := repoDisburse.PostDisbursement(populatePostDisbursementRequest(req, refId))
 				if err != nil {
-					message := fmt.Sprintf("failed to insert disbursement, error: %v", err)
+					message := fmt.Sprintf("failed to post disbursement, error: %v", err)
 					invalidRequests = append(invalidRequests, models.InvalidDisburseRequest{Request: req, Error: message})
 				} else {
-					processedReq := populateProcessedDisbursement(insertReq, int64(pk))
-					processedRequests = append(processedRequests, processedReq)
+					// insert to DB with refId
+					insertReq := populateInsertDisbursementRequest(req, refId, "pending")
+					pk, err := repoDisburse.InsertDisburseToDB(db, insertReq)
+					if err != nil {
+						message := fmt.Sprintf("failed to insert disbursement, error: %v", err)
+						invalidRequests = append(invalidRequests, models.InvalidDisburseRequest{Request: req, Error: message})
+					} else {
+						processedReq := populateProcessedDisbursement(insertReq, int64(pk))
+						processedRequests = append(processedRequests, processedReq)
+					}
+
 				}
 
 			}
-
-		}
-		// }(req)
+		}(req)
 	}
 	// Wait for all Goroutines to finish
-	// wg.Wait()
-
-	fmt.Println("Processed Requests:")
-	for _, processedRequest := range processedRequests {
-		fmt.Printf("Request: %+v", processedRequest)
-	}
-
-	fmt.Println("Invalid Requests:")
-	for _, invalidReq := range invalidRequests {
-		fmt.Printf("Request: %+v, Error: %s\n", invalidReq.Request, invalidReq.Error)
-	}
+	wg.Wait()
 
 	resFinal := models.DisbursementResponse{
 		Processed: processedRequests,
@@ -101,7 +93,7 @@ func DisburseHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, repoDis
 	rsp.RespondWithJSON(w, resFinal, http.StatusOK)
 }
 
-func populateInsertDisbursementRequest(req models.DisbursementRequest, refID string, status string) models.InsertDisbursementRequest {
+func populateInsertDisbursementRequest(req models.DisbursementRequest, refID uuid.UUID, status string) models.InsertDisbursementRequest {
 	return models.InsertDisbursementRequest{
 		Amount:              req.Amount,
 		SourceBankCode:      req.SourceBankCode,
@@ -111,6 +103,18 @@ func populateInsertDisbursementRequest(req models.DisbursementRequest, refID str
 		Remarks:             req.Remarks,
 		ReferenceID:         refID,
 		Status:              status,
+	}
+}
+
+func populatePostDisbursementRequest(req models.DisbursementRequest, refID uuid.UUID) models.PostDisbursementRequest {
+	return models.PostDisbursementRequest{
+		Amount:              req.Amount,
+		SourceBankCode:      req.SourceBankCode,
+		SourceAccount:       req.SourceAccount,
+		DestinationBankCode: req.DestinationBankCode,
+		DestinationAccount:  req.DestinationAccount,
+		Remarks:             req.Remarks,
+		ReferenceID:         refID,
 	}
 }
 

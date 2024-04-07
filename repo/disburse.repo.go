@@ -68,7 +68,7 @@ func (repo DisburseRepo) UpdateDisbursementStatus(db *sql.DB, referenceID int, n
 	return nil
 }
 
-func (repo DisburseRepo) PostDisbursement(req models.DisbursementRequest) (int64, error) {
+func (repo DisburseRepo) PostDisbursement(req models.PostDisbursementRequest) (int64, error) {
 
 	// Convert DisbursementRequest to JSON
 	reqBody, err := json.Marshal(req)

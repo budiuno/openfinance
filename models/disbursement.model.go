@@ -1,5 +1,7 @@
 package models
 
+import "github.com/google/uuid"
+
 type DisbursementRequest struct {
 	Amount              int64  `json:"amount"`
 	SourceBankCode      string `json:"source_bank_code"`
@@ -9,27 +11,37 @@ type DisbursementRequest struct {
 	Remarks             string `json:"remarks"`
 }
 
+type PostDisbursementRequest struct {
+	Amount              int64     `json:"amount"`
+	SourceBankCode      string    `json:"source_bank_code"`
+	SourceAccount       string    `json:"source_account"`
+	DestinationBankCode string    `json:"destination_bank_code"`
+	DestinationAccount  string    `json:"destination_account"`
+	Remarks             string    `json:"remarks"`
+	ReferenceID         uuid.UUID `json:"reference_id"`
+}
+
 type InsertDisbursementRequest struct {
-	Amount              int64  `json:"amount"`
-	SourceBankCode      string `json:"source_bank_code"`
-	SourceAccount       string `json:"source_account"`
-	DestinationBankCode string `json:"destination_bank_code"`
-	DestinationAccount  string `json:"destination_account"`
-	Remarks             string `json:"remarks"`
-	ReferenceID         string `json:"reference_id"`
-	Status              string `json:"status"`
+	Amount              int64     `json:"amount"`
+	SourceBankCode      string    `json:"source_bank_code"`
+	SourceAccount       string    `json:"source_account"`
+	DestinationBankCode string    `json:"destination_bank_code"`
+	DestinationAccount  string    `json:"destination_account"`
+	Remarks             string    `json:"remarks"`
+	ReferenceID         uuid.UUID `json:"reference_id"`
+	Status              string    `json:"status"`
 }
 
 type ProcessedDisbursement struct {
-	ID                  int64  `json:"disbursement_id"`
-	Amount              int64  `json:"amount"`
-	SourceBankCode      string `json:"source_bank_code"`
-	SourceAccount       string `json:"source_account"`
-	DestinationBankCode string `json:"destination_bank_code"`
-	DestinationAccount  string `json:"destination_account"`
-	Remarks             string `json:"remarks"`
-	ReferenceID         string `json:"reference_id"`
-	Status              string `json:"status"`
+	ID                  int64     `json:"disbursement_id"`
+	Amount              int64     `json:"amount"`
+	SourceBankCode      string    `json:"source_bank_code"`
+	SourceAccount       string    `json:"source_account"`
+	DestinationBankCode string    `json:"destination_bank_code"`
+	DestinationAccount  string    `json:"destination_account"`
+	Remarks             string    `json:"remarks"`
+	ReferenceID         uuid.UUID `json:"reference_id"`
+	Status              string    `json:"status"`
 }
 
 // DisbursementResponse represents the response for a wallet disbursement.
