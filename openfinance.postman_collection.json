@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "f71c726e-36aa-4160-a2db-126b43276c3f",
+		"name": "openfinance",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32508699"
+	},
+	"item": [
+		{
+			"name": "disbursements",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTI1NTUzODQsInVzZXJfaWQiOiJlN2NmM2JlZC0zMmMyLTRkOWEtOGVhNC0zYWI4YTJlNThhOTMifQ.uU7CUMR6LY4CLPVpraGqlTU9xNjftQ0wiIu03YT12F0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"amount\": 100000,\n    \"source_account\": \"12341234\",\n    \"destination_account\": \"56785678\",\n    \"remarks\": \"test disburse\",\n    \"source_bank_code\": \"tsb\",\n    \"destination_bank_code\": \"tsb\"\n  },\n  {\n    \"amount\": 500000,\n    \"source_account\": \"12341234\",\n    \"destination_account\": \"56785678\",\n    \"remarks\": \"test disburse\",\n    \"source_bank_code\": \"tsb\",\n    \"destination_bank_code\": \"tsb\"\n  },\n  {\n    \"amount\": 300000,\n    \"source_account\": \"12341234\",\n    \"destination_account\": \"56785678\",\n    \"remarks\": \"test disburse\",\n    \"source_bank_code\": \"tsb\",\n    \"destination_bank_code\": \"tsb\"\n  }\n]\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/v1/disbursements",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"v1",
+						"disbursements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "callback disbursement",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTI1NTUzODQsInVzZXJfaWQiOiJlN2NmM2JlZC0zMmMyLTRkOWEtOGVhNC0zYWI4YTJlNThhOTMifQ.uU7CUMR6LY4CLPVpraGqlTU9xNjftQ0wiIu03YT12F0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 9,\n    \"status\": \"succeed\"\n}\n\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/v1/callback/disbursements",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"v1",
+						"callback",
+						"disbursements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "validateAccount",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTI1NTUzODQsInVzZXJfaWQiOiJlN2NmM2JlZC0zMmMyLTRkOWEtOGVhNC0zYWI4YTJlNThhOTMifQ.uU7CUMR6LY4CLPVpraGqlTU9xNjftQ0wiIu03YT12F0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/v1/account/tsb/12341234",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"v1",
+						"account",
+						"tsb",
+						"12341234"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
