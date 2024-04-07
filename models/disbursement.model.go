@@ -62,6 +62,6 @@ type InvalidDisburseRequest struct {
 }
 
 type CallbackDisbursementRequest struct {
-	ReferenceID int64  `json:"id"`
-	Status      string `json:"status"`
+	ReferenceID uuid.UUID `json:"id"`
+	Status      string    `json:"status"`
 }

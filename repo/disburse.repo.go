@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/budiuno/openfinance/models"
+	"github.com/google/uuid"
 )
 
 type DisburseRepo struct{}
@@ -51,7 +52,7 @@ func (repo DisburseRepo) InsertDisburseToDB(db *sql.DB, req models.InsertDisburs
 	return id, nil
 }
 
-func (repo DisburseRepo) UpdateDisbursementStatus(db *sql.DB, referenceID int, newStatus string) error {
+func (repo DisburseRepo) UpdateDisbursementStatus(db *sql.DB, referenceID uuid.UUID, newStatus string) error {
 	// Construct the SQL query for updating the status
 	query := `
 		UPDATE disbursements

@@ -18,7 +18,7 @@ func CallbackDisbursementHandler(w http.ResponseWriter, r *http.Request, db *sql
 		return
 	}
 
-	err := repoDisburse.UpdateDisbursementStatus(db, int(request.ReferenceID), request.Status)
+	err := repoDisburse.UpdateDisbursementStatus(db, request.ReferenceID, request.Status)
 	if err != nil {
 		fmt.Printf("Error on update disburse status to %s, reference_id %d, error : %v\n", request.Status, request.ReferenceID, err)
 	}
