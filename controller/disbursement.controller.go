@@ -16,6 +16,7 @@ import (
 type disburseSetter interface {
 	InsertDisburseToDB(db *sql.DB, req models.InsertDisbursementRequest) (int, error)
 	PostDisbursement(req models.DisbursementRequest) (int64, error)
+	UpdateDisbursementStatus(db *sql.DB, referenceID int, newStatus string) error
 }
 
 func DisburseHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, repoDisburse disburseSetter) {

@@ -26,8 +26,8 @@ func (repo DisburseRepo) InsertDisburseToDB(db *sql.DB, req models.InsertDisburs
 			destination_bank_code,
 			destination_account,
 			reference_id,
-			remarks,
-			status
+			status,
+			remarks
 		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id;
 	`
 
@@ -49,6 +49,23 @@ func (repo DisburseRepo) InsertDisburseToDB(db *sql.DB, req models.InsertDisburs
 	}
 
 	return id, nil
+}
+
+func (repo DisburseRepo) UpdateDisbursementStatus(db *sql.DB, referenceID int, newStatus string) error {
+	// Construct the SQL query for updating the status
+	query := `
+		UPDATE disbursements
+		SET status = $1
+		WHERE reference_id = $2;
+	`
+
+	// Execute the SQL query with the provided parameters
+	_, err := db.Exec(query, newStatus, referenceID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (repo DisburseRepo) PostDisbursement(req models.DisbursementRequest) (int64, error) {

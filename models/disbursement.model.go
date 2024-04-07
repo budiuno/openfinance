@@ -48,3 +48,8 @@ type InvalidDisburseRequest struct {
 	Request DisbursementRequest
 	Error   string
 }
+
+type CallbackDisbursementRequest struct {
+	ReferenceID int64  `json:"id"`
+	Status      string `json:"status"`
+}

@@ -45,6 +45,12 @@ func main() {
 
 	r.Handle("/v1/disbursements", auth.Authenticate(disbursementHandler)).Methods("POST")
 
+	callbackDisbursementHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		controller.CallbackDisbursementHandler(w, r, db.DB, repo.DisburseRepo{})
+	})
+
+	r.Handle("/v1/callback/disbursements", callbackDisbursementHandler).Methods("POST")
+
 	port := 8000
 	fmt.Printf("Server is running on http://localhost:%d\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
